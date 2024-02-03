@@ -32,7 +32,10 @@ form.addEventListener("submit", function (e) {
 function checkInput() {
   let output = true;
   inputIds.forEach((element) => {
-    if (!document.getElementById(element).value) {
+    if (
+      !document.getElementById(element).value ||
+      !document.getElementById(element).value.replace(/\s/g, "") != ""
+    ) {
       output = element;
     }
   });
