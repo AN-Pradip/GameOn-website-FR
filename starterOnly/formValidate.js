@@ -33,7 +33,7 @@ function checkInput() {
   let output = true;
   inputIds.forEach((element) => {
     if (!document.getElementById(element).value) {
-      output = element.id;
+      output = element;
     }
   });
   return output;
@@ -55,11 +55,14 @@ function displayValidationMessage(validationContainer, validationMessage) {
   validationMessage.style.display = "block";
   form.style.display = "none";
   let newButton = document.createElement("button");
+  newButton.id = "exitOutputModalButton";
   newButton.value = "Fermer";
   newButton.textContent = "Fermer";
   newButton.className = "button modalOutput-button";
-  validationContainer.appendChild(newButton);
-  newButton.addEventListener("click", closeModal);
+  if (!document.getElementById(newButton.id)) {
+    validationContainer.appendChild(newButton);
+    newButton.addEventListener("click", closeModal);
+  }
 }
 
 //Message chooser function

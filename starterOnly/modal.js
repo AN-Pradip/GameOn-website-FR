@@ -35,4 +35,20 @@ function closeModal() {
   if (width < 768) {
     heroSection.style.display = "block";
   }
+  if (document.querySelector(".modalOutput").style.display == "grid") {
+    document.querySelector(".modalOutput").style.display = "none";
+    document.getElementById("form").style.display = "inline";
+    let inputs = document.getElementsByTagName("input");
+
+    for (let input of inputs) {
+      console.log(input.className);
+      if (input.className != "btn-submit" && input.id != "checkbox1") {
+        input.value = "";
+      }
+
+      if (input.checked && input.name == "location") {
+        input.checked = false;
+      }
+    }
+  }
 }
