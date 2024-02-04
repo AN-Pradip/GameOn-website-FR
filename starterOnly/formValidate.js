@@ -8,8 +8,14 @@ const termsAndConditions = document.getElementById("checkbox1");
 // Button click event
 form.addEventListener("submit", function (e) {
   e.preventDefault();
-  let validationInputs = checkInput();
-  let validationRadio = checkRadioButton();
+  let checkOutput = checkInput();
+  if (checkOutput) {
+    displayValidationMessage(
+      document.querySelector(".modalOutput"),
+      document.querySelector(".modalOutput-text")
+    );
+  }
+  /*
   if (validationInputs == true) {
     if (validationRadio == true) {
       if (termsAndConditions.checked == true) {
@@ -18,28 +24,76 @@ form.addEventListener("submit", function (e) {
           document.querySelector(".modalOutput-text")
         );
       } else {
-        confirm(displayIncorrectValueMessage("condition"));
+        confirm(incorrectValueMessage("condition"));
       }
     } else {
-      confirm(displayIncorrectValueMessage("radio"));
+      confirm(incorrectValueMessage("radio"));
     }
   } else {
-    confirm(displayIncorrectValueMessage(validationInputs));
+    confirm(incorrectValueMessage(validationInputs));
   }
+  */
 });
 
 // Check inputs
 function checkInput() {
-  let output = true;
+  let success = true;
+  let errorMessage;
+
+  //check typed inputs
   inputIds.forEach((element) => {
-    if (
-      !document.getElementById(element).value ||
-      !document.getElementById(element).value.replace(/\s/g, "") != ""
-    ) {
-      output = element;
+    console.log("checking :" + element);
+    const htmlElement = document.getElementById(element);
+    let errorMessageDOM = htmlElement.nextElementSibling;
+    if (!htmlElement.value || htmlElement.value.replace(/\s/g, "") == "") {
+      success = false;
+      console.log("problem");
+      if (errorMessageDOM === null || errorMessageDOM.tagName == "BR") {
+        errorMessage = document.createElement("p");
+        errorMessage.className = "error-message";
+        console.log("create message");
+        errorMessage.textContent = incorrectValueMessage(element);
+        htmlElement.insertAdjacentElement("afterend", errorMessage);
+      }
+    } else if (errorMessageDOM != null) {
+      errorMessageDOM.remove();
     }
   });
-  return output;
+
+  //check radio button
+  const checkboxContainer = document.getElementById("checkboxContainer");
+  let radioCheckOutput = checkRadioButton();
+  errorMessageDOM = checkboxContainer.nextElementSibling;
+
+  if (radioCheckOutput != true) {
+    success = false;
+    if (errorMessageDOM.tagName != "P") {
+      errorMessage = document.createElement("p");
+      errorMessage.className = "error-message";
+      errorMessage.textContent = incorrectValueMessage(radioCheckOutput);
+      checkboxContainer.insertAdjacentElement("afterend", errorMessage);
+    }
+  } else if (errorMessageDOM.tagName == "P") {
+    checkboxContainer.nextElementSibling.remove();
+  }
+
+  //check terms and conditions
+  const termsAndConditions = document.getElementById("termsAndConditions");
+  const termsAndConditionsCheckbox = document.getElementById("checkbox1");
+
+  if (termsAndConditionsCheckbox.checked != true) {
+    success = false;
+    if (termsAndConditions.nextElementSibling.tagName != "P") {
+      errorMessage = document.createElement("p");
+      errorMessage.className = "error-message";
+      errorMessage.textContent = incorrectValueMessage("condition");
+      termsAndConditions.insertAdjacentElement("afterend", errorMessage);
+    }
+  } else if (termsAndConditions.nextElementSibling.tagName == "P") {
+    termsAndConditions.nextElementSibling.remove();
+  }
+
+  return success;
 }
 
 // Check radio buttons
@@ -48,7 +102,7 @@ function checkRadioButton() {
   if (checkRadio != null) {
     return true;
   } else {
-    return false;
+    return "radio";
   }
 }
 
@@ -69,7 +123,7 @@ function displayValidationMessage(validationContainer, validationMessage) {
 }
 
 //Message chooser function
-function displayIncorrectValueMessage(value) {
+function incorrectValueMessage(value) {
   switch (value) {
     case "first":
       return "Veuillez entrer 2 caractères ou plus pour le champ du prenom";
@@ -89,3 +143,5 @@ function displayIncorrectValueMessage(value) {
       return "erreur";
   }
 }
+
+function displayErrorMessage() {}
